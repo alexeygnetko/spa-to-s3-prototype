@@ -1,0 +1,30 @@
+name: Build and test Angular
+
+on:
+  workflow_call:
+jobs:
+  build-angular:
+    name: Build and test Angular using Node.js
+    runs-on: ubuntu-latest
+    env:
+      CLIENT_PATH: angular
+    defaults:
+      run:
+        working-directory: ${{ env.CLIENT_PATH }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+          cache: npm
+          cache-dependency-path: ${{ env.CLIENT_PATH }}/package-lock.json
+      - run: npm ci
+      - run: npm run test
+      - run: npm run build
+      - name: Upload 'dist' to artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: ${{ env.CLIENT_PATH }}/dist/${{ env.CLIENT_PATH }}
+          retention-days: 1

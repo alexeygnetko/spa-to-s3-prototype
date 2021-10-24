@@ -1,0 +1,46 @@
+name: Provision AWS infsrastructure
+
+on:
+  workflow_call:
+    inputs:
+      aws-region:
+        description: AWS region
+        type: string
+        required: true
+    secrets:
+      aws-access-key-id:
+        description: AWS access key ID
+        required: true
+      aws-secret-access-key:
+        description: AWS secret access key
+        required: true
+
+jobs:
+  provision-aws:
+    name: Provision AWS infrastructure using Terraform
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+          aws-region: ${{ inputs.aws-region }}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1.2.1
+        with:
+          terraform_wrapper: false
+      - run: terraform init
+      - run: terraform apply
+      - name: Set S3 bucket info to output
+        id: s3-bucket
+        run: |
+          ../.github/scripts/set_terraform_output.sh s3_bucket_name s3-bucket-name
+          ../.github/scripts/set_terraform_output.sh s3_website_endpoint s3-website-endpoint
+    outputs:
+      s3-bucket-name: ${{ steps.s3-bucket.outputs.s3-bucket-name }}
+      s3-website-endpoint: ${{ steps.s3-bucket.outputs.s3-website-endpoint }}

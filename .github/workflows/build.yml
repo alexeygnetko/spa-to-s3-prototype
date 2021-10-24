@@ -1,29 +1,17 @@
-name: Build
+name: Build, Provision
 
 on:
   workflow_dispatch:
 
   push:
     branches: [main]
-  pull_request:
-
 jobs:
-  Build:
-    runs-on: ubuntu-latest
-    env:
-        CLIENT_PATH: angular
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14.x
-        cache: 'npm'
-        cache-dependency-path: ${{ env.CLIENT_PATH }}/package-lock.json
-    - run: npm ci 
-      working-directory: ${{ env.CLIENT_PATH }}
-    - run: npm run test
-      working-directory: ${{ env.CLIENT_PATH }}
-    - run: npm run build 
-      working-directory: ${{ env.CLIENT_PATH }}
-           
+  build:
+    uses: alexeygnetko/angular-and-s3/.github/workflows/build-angular.yml@main
+  provision:
+    uses: alexeygnetko/angular-and-s3/.github/workflows/provision-aws.yml@main
+    secrets:
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    with:
+      aws-region: eu-west-1
