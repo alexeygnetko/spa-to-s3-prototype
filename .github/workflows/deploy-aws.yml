@@ -1,0 +1,43 @@
+name: Deploy an artifact to AWS
+
+on:
+  workflow_call:
+    inputs:
+      s3-bucket-name:
+        description: AWS S3 bucket
+        type: string
+        required: true
+      artifact-name:
+        description: Artifact to deploy
+        type: string
+        required: true
+      aws-region:
+        description: AWS region
+        type: string
+        required: true
+    secrets:
+      aws-access-key-id:
+        description: AWS access key ID
+        required: true
+      aws-secret-access-key:
+        description: AWS secret access key
+        required: true
+
+jobs:
+  deploy-aws:
+    name: Deploy an artifact to AWS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ inputs.artifact-name }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+          aws-region: ${{ inputs.aws-region }}
+      - name: Copy files to S3 website
+        run: |
+          aws s3 sync . s3://${{ inputs.s3-bucket-name }} --acl public-read

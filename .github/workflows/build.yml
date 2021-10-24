@@ -1,4 +1,4 @@
-name: Build, Provision
+name: Build, Provision and Deploy
 
 on:
   workflow_dispatch:
@@ -15,3 +15,17 @@ jobs:
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     with:
       aws-region: eu-west-1
+  deploy:
+    uses: alexeygnetko/angular-and-s3/.github/workflows/deploy-aws.yml@main
+    needs:
+      - provision
+      - build
+    secrets:
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    with:
+      aws-region: eu-west-1
+      # Outputs from reused jobs like ${{ needs.provision.outputs.s3-bucket-name }} don't work in beta.
+      # So the hardcoded value is used here:
+      s3-bucket-name: angular-and-s3-application.example.com
+      artifact-name: dist
