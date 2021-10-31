@@ -25,7 +25,8 @@ jobs:
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     with:
       aws-region: eu-west-1
-      # Outputs from reused jobs like ${{ needs.provision.outputs.s3-bucket-name }} don't work in beta.
+      # Outputs from reused jobs like ${{ needs.provision.outputs.s3-bucket-name }} don't work in the reusable jobs beta.
+      # See https://docs.github.com/en/actions/learn-github-actions/reusing-workflows#limitations.
       # So the hardcoded value is used here:
       s3-bucket-name: spa-to-s3-prototype.example.com
       artifact-name: dist
