@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket = "angular-and-s3-terraform-statelock"
-    key    = "angular-and-s3.tfstate"
+    bucket = "spa-to-s3-prototype-terraform-statelock"
+    key    = "spa-to-s3-prototype.tfstate"
     region = "eu-west-1"
   }
   required_providers {

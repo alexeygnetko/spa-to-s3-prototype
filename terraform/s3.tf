@@ -1,5 +1,5 @@
-resource "aws_s3_bucket" "angular-and-s3-application" {
-  bucket = "angular-and-s3-application.example.com"
+resource "aws_s3_bucket" "spa-to-s3-prototype" {
+  bucket = "spa-to-s3-prototype.example.com"
   acl    = "public-read"
 
   website {

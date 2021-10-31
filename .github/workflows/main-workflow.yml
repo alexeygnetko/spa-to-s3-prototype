@@ -7,16 +7,16 @@ on:
     branches: [main]
 jobs:
   build:
-    uses: alexeygnetko/angular-and-s3/.github/workflows/build-angular.yml@main
+    uses: alexeygnetko/spa-to-s3-prototype/.github/workflows/build-angular.yml@main
   provision:
-    uses: alexeygnetko/angular-and-s3/.github/workflows/provision-aws.yml@main
+    uses: alexeygnetko/spa-to-s3-prototype/.github/workflows/provision-aws.yml@main
     secrets:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     with:
       aws-region: eu-west-1
   deploy:
-    uses: alexeygnetko/angular-and-s3/.github/workflows/deploy-aws.yml@main
+    uses: alexeygnetko/spa-to-s3-prototype/.github/workflows/deploy-aws.yml@main
     needs:
       - provision
       - build
@@ -27,5 +27,5 @@ jobs:
       aws-region: eu-west-1
       # Outputs from reused jobs like ${{ needs.provision.outputs.s3-bucket-name }} don't work in beta.
       # So the hardcoded value is used here:
-      s3-bucket-name: angular-and-s3-application.example.com
+      s3-bucket-name: spa-to-s3-prototype.example.com
       artifact-name: dist
