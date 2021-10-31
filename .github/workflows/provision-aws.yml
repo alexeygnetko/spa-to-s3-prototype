@@ -35,7 +35,7 @@ jobs:
         with:
           terraform_wrapper: false
       - run: terraform init
-      - run: terraform apply
+      - run: terraform apply -auto-approve
       - name: Set S3 bucket info to output
         id: s3-bucket
         run: |
