@@ -40,4 +40,4 @@ jobs:
           aws-region: ${{ inputs.aws-region }}
       - name: Copy files to S3 website
         run: |
-          aws s3 sync . s3://${{ inputs.s3-bucket-name }} --acl public-read
+          aws s3 sync . s3://${{ inputs.s3-bucket-name }} --acl public-read --delete
